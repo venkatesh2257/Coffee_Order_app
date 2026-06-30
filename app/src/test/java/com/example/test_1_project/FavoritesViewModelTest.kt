@@ -1,18 +1,29 @@
 package com.example.test_1_project
 
 import com.example.test_1_project.data.Coffee
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class FavoritesViewModelTest {
 
     private lateinit var favoritesViewModel: FavoritesViewModel
     private lateinit var testCoffee1: Coffee
     private lateinit var testCoffee2: Coffee
+    private val mockAuth = mockk<FirebaseAuth>(relaxed = true)
+    private val mockFirestore = mockk<FirebaseFirestore>(relaxed = true)
 
     @Before
     fun setup() {
+        // Mock Firebase to return null user (not authenticated)
+        every { mockAuth.currentUser } returns null
+        
         // FavoritesViewModel now has a try-catch in init to handle 
         // Firebase not being initialized during unit tests.
         favoritesViewModel = FavoritesViewModel()
@@ -86,8 +97,9 @@ class FavoritesViewModelTest {
     @Test
     fun `loadFavorites does nothing when user is not authenticated`() {
         val initialSize = favoritesViewModel.favorites.size
-        // This will return early because auth.currentUser is null (or throws and is caught)
+        // When currentUser is null, loadFavorites returns early
         favoritesViewModel.loadFavorites()
+        // Size should remain the same since user is not authenticated
         assertEquals(initialSize, favoritesViewModel.favorites.size)
     }
 
