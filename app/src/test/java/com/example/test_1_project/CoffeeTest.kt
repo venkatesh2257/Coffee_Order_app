@@ -117,10 +117,10 @@ class CoffeeTest {
         val espresso = coffeeList.find { it.name == "Espresso" }
         
         assertNotNull(espresso)
-        assertEquals("1", espresso?.id)
-        assertEquals("Strong & Bold", espresso?.type)
-        assertEquals(3.50, espresso?.price, 0.001)
-        assertEquals("Pure and intense coffee experience.", espresso?.description)
+        assertEquals("1", espresso!!.id)
+        assertEquals("Strong & Bold", espresso.type)
+        assertEquals(3.50, espresso.price, 0.001)
+        assertEquals("Pure and intense coffee experience.", espresso.description)
     }
 
     @Test
@@ -128,9 +128,9 @@ class CoffeeTest {
         val cappuccino = coffeeList.find { it.name == "Cappuccino" }
         
         assertNotNull(cappuccino)
-        assertEquals("4", cappuccino?.id)
-        assertEquals("Creamy Foam", cappuccino?.type)
-        assertEquals(4.50, cappuccino?.price, 0.001)
+        assertEquals("4", cappuccino!!.id)
+        assertEquals("Creamy Foam", cappuccino.type)
+        assertEquals(4.50, cappuccino.price, 0.001)
     }
 
     @Test
@@ -138,9 +138,9 @@ class CoffeeTest {
         val matchaLatte = coffeeList.find { it.name == "Matcha Latte" }
         
         assertNotNull(matchaLatte)
-        assertEquals("6", matchaLatte?.id)
-        assertEquals("Zen Green", matchaLatte?.type)
-        assertEquals(5.25, matchaLatte?.price, 0.001)
+        assertEquals("6", matchaLatte!!.id)
+        assertEquals("Zen Green", matchaLatte.type)
+        assertEquals(5.25, matchaLatte.price, 0.001)
     }
 
     @Test
