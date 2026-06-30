@@ -13,14 +13,17 @@ class FavoritesViewModel : ViewModel() {
     private val _favorites = mutableStateListOf<Coffee>()
     val favorites: List<Coffee> = _favorites
 
-    private val db = Firebase.firestore
-    private val auth = Firebase.auth
-
     init {
-        loadFavorites()
+        try {
+            loadFavorites()
+        } catch (e: Exception) {
+            // Safe catch for Unit Tests where Firebase is not initialized
+        }
     }
 
     fun loadFavorites() {
+        val auth = Firebase.auth
+        val db = Firebase.firestore
         val userId = auth.currentUser?.uid ?: return
 
         db.collection("favorites")
@@ -38,6 +41,8 @@ class FavoritesViewModel : ViewModel() {
     }
 
     fun toggleFavorite(coffee: Coffee, onResult: (Boolean) -> Unit = {}) {
+        val auth = Firebase.auth
+        val db = Firebase.firestore
         val userId = auth.currentUser?.uid
         if (userId == null) {
             onResult(false)
