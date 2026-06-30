@@ -5,11 +5,16 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.example.test_1_project.data.Coffee
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
-class FavoritesViewModel : ViewModel() {
+class FavoritesViewModel(
+    private val auth: FirebaseAuth? = null,
+    private val db: FirebaseFirestore? = null
+) : ViewModel() {
     private val _favorites = mutableStateListOf<Coffee>()
     val favorites: List<Coffee> = _favorites
 
@@ -22,11 +27,21 @@ class FavoritesViewModel : ViewModel() {
     }
 
     fun loadFavorites() {
-        val auth = Firebase.auth
-        val db = Firebase.firestore
-        val userId = auth.currentUser?.uid ?: return
+        val authInstance = auth ?: try {
+            Firebase.auth
+        } catch (e: Exception) {
+            return
+        }
+        
+        val dbInstance = db ?: try {
+            Firebase.firestore
+        } catch (e: Exception) {
+            return
+        }
+        
+        val userId = authInstance.currentUser?.uid ?: return
 
-        db.collection("favorites")
+        dbInstance.collection("favorites")
             .whereEqualTo("userId", userId)
             .get()
             .addOnSuccessListener { snapshot ->
@@ -41,9 +56,21 @@ class FavoritesViewModel : ViewModel() {
     }
 
     fun toggleFavorite(coffee: Coffee, onResult: (Boolean) -> Unit = {}) {
-        val auth = Firebase.auth
-        val db = Firebase.firestore
-        val userId = auth.currentUser?.uid
+        val authInstance = auth ?: try {
+            Firebase.auth
+        } catch (e: Exception) {
+            onResult(false)
+            return
+        }
+        
+        val dbInstance = db ?: try {
+            Firebase.firestore
+        } catch (e: Exception) {
+            onResult(false)
+            return
+        }
+        
+        val userId = authInstance.currentUser?.uid
         if (userId == null) {
             onResult(false)
             return
@@ -53,13 +80,13 @@ class FavoritesViewModel : ViewModel() {
 
         if (isFavorite) {
             // Remove from favorites
-            db.collection("favorites")
+            dbInstance.collection("favorites")
                 .whereEqualTo("userId", userId)
                 .whereEqualTo("coffeeId", coffee.id)
                 .get()
                 .addOnSuccessListener { snapshot ->
                     snapshot.documents.forEach { doc ->
-                        db.collection("favorites").document(doc.id).delete()
+                        dbInstance.collection("favorites").document(doc.id).delete()
                     }
                     _favorites.removeIf { it.id == coffee.id }
                     onResult(false)
@@ -76,7 +103,7 @@ class FavoritesViewModel : ViewModel() {
                 "coffeeId" to coffee.id,
                 "timestamp" to com.google.firebase.Timestamp.now()
             )
-            db.collection("favorites")
+            dbInstance.collection("favorites")
                 .add(favoriteData)
                 .addOnSuccessListener {
                     _favorites.add(coffee)
