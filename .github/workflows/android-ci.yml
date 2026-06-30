@@ -42,18 +42,33 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      # ✅ UNIT TESTS - Must Pass
       - name: Run unit tests
         run: ./gradlew test --stacktrace
+        continue-on-error: false
 
-      - name: Run instrumented tests
+      # ✅ INSTRUMENTED TESTS - Improved emulator settings
+      - name: Run instrumented tests (Emulator API 31)
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
-          target: default
+          api-level: 31
+          target: google_apis
           arch: x86_64
           profile: Nexus 6
+          cores: 2
+          ram-size: 2048M
+          disk-size: 2048M
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
           script: ./gradlew connectedAndroidTest --stacktrace
 
+      # ✅ CODE QUALITY - Lint & Detekt
+      - name: Run code quality checks
+        run: ./gradlew lint detekt --stacktrace
+        continue-on-error: false
+
+      # ✅ BUILD ARTIFACTS
       - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
 
@@ -74,6 +89,7 @@ jobs:
           path: app/build/outputs/apk/release/app-release.apk
           retention-days: 30
 
+      # ✅ TEST REPORTS
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -84,14 +100,22 @@ jobs:
             app/build/reports/tests/
           retention-days: 14
 
-      - name: Upload lint results
+      - name: Upload quality reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lint-results
-          path: app/build/reports/lint-results-*.html
+          name: quality-reports
+          path: |
+            app/build/reports/lint-results*.html
+            app/build/reports/detekt/
           retention-days: 14
 
+      # ✅ SECURITY SCAN - Dependency vulnerabilities
+      - name: Security scan - Check dependencies
+        run: ./gradlew dependencyCheckAnalyze --stacktrace
+        continue-on-error: true
+
+      # ✅ PR COMMENT WITH RESULTS
       - name: Comment test results on PR
         if: github.event_name == 'pull_request' && always()
         uses: actions/github-script@v7
@@ -117,6 +141,8 @@ jobs:
             comment += `\n## 📱 Build Artifacts\n\n`;
             comment += `- Debug APK: Available in artifacts\n`;
             comment += `- Release APK: Available in artifacts\n`;
+            comment += `- Test Reports: Available in artifacts\n`;
+            comment += `- Quality Reports: Available in artifacts\n`;
             
             github.rest.issues.createComment({
               issue_number: context.issue.number,

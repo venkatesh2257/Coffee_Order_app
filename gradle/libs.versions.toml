@@ -17,6 +17,8 @@ credentials = "1.6.0"
 credentialsPlayServicesAuth = "1.6.0"
 googleid = "1.2.0"
 coreSplashScreen = "1.0.1"
+detekt = "1.23.5"
+dependencyCheck = "9.0.9"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,3 +53,5 @@ androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscree
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+dependency-check = { id = "org.owasp.dependencycheck", version.ref = "dependencyCheck" }
