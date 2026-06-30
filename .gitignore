@@ -1,0 +1,30 @@
+# Gradle files
+.gradle/
+build/
+/*/build/
+
+# Local configuration files
+local.properties
+
+# Android Studio / IntelliJ IDEA files
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# User-specific stuff
+.DS_Store
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Signing files
+*.jks
+*.keystore
+!debug.keystore
+
+# Log files
+*.log
+
+# Android Profiler
+*.hprof

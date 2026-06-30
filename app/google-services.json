@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "729928577830",
+    "project_id": "cofee-f53c6",
+    "storage_bucket": "cofee-f53c6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729928577830:android:6739e3733d0e42764487e7",
+        "android_client_info": {
+          "package_name": "com.example.test_1_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "729928577830-29hkph31g9m9i3scnonqc8uiakobe5gv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.test_1_project",
+            "certificate_hash": "ae069cf94a8779c43ade36c2670efd1aa58cb56e"
+          }
+        },
+        {
+          "client_id": "729928577830-amsegvk1ravtls69un7ab4gpmqdau9v3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAIDU9TbBUrFkrozCBtKInUR3PuonRBeg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "729928577830-amsegvk1ravtls69un7ab4gpmqdau9v3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
